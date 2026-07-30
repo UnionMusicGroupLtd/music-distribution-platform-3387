@@ -124,8 +124,11 @@ const Dashboard = () => {
       const userMetadata = currentUserData.appMetadata || {};
       const userEmail = currentUserData.email || '';
       
+      // Use the local isImpersonatingCheck variable instead of relying on potentially stale state
+      const isImpersonatingCheck = !!(impersonateUuid && adminSession);
+      
       // Multiple admin detection methods for robustness
-      const isAdminCheck = !isImpersonating && (
+      const isAdminCheck = !isImpersonatingCheck && (
         // Method 1: Check user metadata role
         userMetadata.role === 'admin' ||
         // Method 2: Check specific admin email
@@ -143,7 +146,7 @@ const Dashboard = () => {
       console.log("Dashboard: User email:", userEmail);
       console.log("Dashboard: User groups:", currentUserData.groups);
       console.log("Dashboard: Admin check details:", {
-        isImpersonating,
+        isImpersonatingCheck,
         userRole: userMetadata.role,
         email: userEmail,
         hasGroups: !!currentUserData.groups,
@@ -158,8 +161,15 @@ const Dashboard = () => {
         }
       });
       
+      // DEBUG: Log when we're in impersonation mode but admin check might be wrong
+      if (isImpersonatingCheck && isAdminCheck) {
+        console.error("⚠️ WARNING: isImpersonatingCheck=true but isAdminCheck=true - Admin Panel will show incorrectly!");
+        console.error("This is the bug causing the admin panel to appear during impersonation");
+      }
+      
       // Force admin access for debugging if all checks fail but email matches
-      if (!isAdminCheck && userEmail === 'info@unionmusicgroup.co.uk') {
+      // IMPORTANT: Skip this during impersonation to prevent admin panel from showing
+      if (!isAdminCheck && userEmail === 'info@unionmusicgroup.co.uk' && !isImpersonatingCheck) {
         console.warn("Forcing admin access due to email match");
         setIsAdmin(true);
       }
