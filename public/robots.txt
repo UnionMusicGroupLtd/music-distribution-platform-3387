@@ -1,0 +1,32 @@
+# Robots.txt for Union Music Group Distribution Platform
+# Allow all crawlers to access the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin areas
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://distro.distributionunion.com/sitemap.xml
+
+# Crawl-delay for specific bots
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Bingbot
+Crawl-delay: 1
+
+# Disallow development files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.ts
+Disallow: /*.tsx
+
+# Allow common static files
+Allow: /public/
+Allow: /images/
+Allow: /favicon.ico
+Allow: /robots.txt
+Allow: /sitemap.xml
