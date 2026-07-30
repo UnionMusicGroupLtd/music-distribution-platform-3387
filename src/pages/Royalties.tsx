@@ -15,6 +15,8 @@ const Royalties = () => {
   const [tracks, setTracks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod] = useState("all");
+  const [isImpersonating, setIsImpersonating] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     loadUserData();
@@ -24,8 +26,43 @@ const Royalties = () => {
     try {
       console.log('Royalties: Starting data load...');
       
-      const currentUserData = await auth.getUser();
+      // Check for admin impersonation
+      const urlParams = new URLSearchParams(window.location.search);
+      const impersonateUuid = urlParams.get('impersonate');
+      const adminSession = localStorage.getItem('adminSession');
+      
+      let currentUserData = await auth.getUser();
       let effectiveUserUuid = currentUserData?.userUuid;
+      
+      // If admin is impersonating a user, get the impersonated user's data
+      if (impersonateUuid && adminSession) {
+        console.log("Royalties: Admin impersonation detected", impersonateUuid);
+        setIsImpersonating(true);
+        const adminInfo = JSON.parse(adminSession);
+        console.log("Royalties: Admin info", adminInfo);
+        
+        // Get the impersonated user's artist data
+        const impersonatedArtists = await db.query("artists", { user_uuid: `eq.${impersonateUuid}` });
+        if (impersonatedArtists.length > 0) {
+          const impersonatedUser = {
+            ...currentUserData,
+            userUuid: impersonateUuid,
+            email: impersonatedArtists[0].email || currentUserData.email,
+            artist_name: impersonatedArtists[0].artist_name
+          };
+          currentUserData = impersonatedUser;
+          effectiveUserUuid = impersonateUuid;
+          console.log("Royalties: Using impersonated user data:", impersonatedUser);
+        }
+        
+        setCurrentUser(currentUserData);
+        
+        // Show impersonation banner
+        toast.success(`Admin logged in as user`, {
+          description: `Logged in as ${currentUserData?.email || 'user'}. Click 'Return to Admin' to go back.`,
+          duration: 5000
+        });
+      }
       
       console.log('Royalties: User authenticated:', currentUserData.email);
       console.log('Royalties: Effective user UUID:', effectiveUserUuid);
@@ -199,6 +236,35 @@ const Royalties = () => {
         {/* Main Content */}
         <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
+            {/* Admin Impersonation Banner */}
+            {isImpersonating && (
+              <Card className="bg-gradient-to-r from-green-950/30 to-slate-950/50 border-green-500/20 p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div>
+                      <h4 className="text-green-300 font-semibold">Admin Impersonation Mode</h4>
+                      <p className="text-purple-300 text-sm">
+                        Viewing as: <span className="text-white font-medium">{currentUser?.email}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      localStorage.removeItem('adminSession');
+                      window.location.href = '/admin';
+                    }}
+                    className="bg-green-500 hover:bg-green-600"
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Return to Admin
+                  </Button>
+                </div>
+              </Card>
+            )}
+            
             <div className="mb-8">
               <Link to="/dashboard">
                 <Button variant="ghost" className="text-purple-300 hover:text-white mb-4">

@@ -3789,6 +3789,114 @@ Created at: ${new Date().toLocaleString()}
                             </div>
 
                             <div className="flex items-center gap-2">
+                              {/* View Artist Dashboard */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  const artistUuid = user.userUuid || user.user_uuid;
+                                  if (artistUuid) {
+                                    // Set admin session for impersonation
+                                    const adminSessionData = {
+                                      email: 'info@unionmusicgroup.co.uk',
+                                      isAdmin: true,
+                                      timestamp: Date.now()
+                                    };
+                                    localStorage.setItem('adminSession', JSON.stringify(adminSessionData));
+                                    
+                                    // Navigate to artist dashboard with impersonation
+                                    window.location.href = `/dashboard?impersonate=${artistUuid}`;
+                                  } else {
+                                    toast.error('User UUID not found');
+                                  }
+                                }}
+                                className="text-green-300 hover:text-white hover:bg-green-500/10"
+                              >
+                                <Eye className="w-3 h-3 mr-1" />
+                                View Dashboard
+                              </Button>
+                              
+                              {/* View Artist Royalties */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  const artistUuid = user.userUuid || user.user_uuid;
+                                  if (artistUuid) {
+                                    // Set admin session for impersonation
+                                    const adminSessionData = {
+                                      email: 'info@unionmusicgroup.co.uk',
+                                      isAdmin: true,
+                                      timestamp: Date.now()
+                                    };
+                                    localStorage.setItem('adminSession', JSON.stringify(adminSessionData));
+                                    
+                                    // Navigate to artist royalties page with impersonation
+                                    window.location.href = `/royalties?impersonate=${artistUuid}`;
+                                  } else {
+                                    toast.error('User UUID not found');
+                                  }
+                                }}
+                                className="text-blue-300 hover:text-white hover:bg-blue-500/10"
+                              >
+                                <DollarSign className="w-3 h-3 mr-1" />
+                                View Royalties
+                              </Button>
+                              
+                              {/* View Artist Tracks */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  const artistUuid = user.userUuid || user.user_uuid;
+                                  if (artistUuid) {
+                                    // Set admin session for impersonation
+                                    const adminSessionData = {
+                                      email: 'info@unionmusicgroup.co.uk',
+                                      isAdmin: true,
+                                      timestamp: Date.now()
+                                    };
+                                    localStorage.setItem('adminSession', JSON.stringify(adminSessionData));
+                                    
+                                    // Navigate to artist tracks page with impersonation
+                                    window.location.href = `/tracks?impersonate=${artistUuid}`;
+                                  } else {
+                                    toast.error('User UUID not found');
+                                  }
+                                }}
+                                className="text-purple-300 hover:text-white hover:bg-purple-500/10"
+                              >
+                                <Music className="w-3 h-3 mr-1" />
+                                View Tracks
+                              </Button>
+                              
+                              {/* View Upload Page */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  const artistUuid = user.userUuid || user.user_uuid;
+                                  if (artistUuid) {
+                                    // Set admin session for impersonation
+                                    const adminSessionData = {
+                                      email: 'info@unionmusicgroup.co.uk',
+                                      isAdmin: true,
+                                      timestamp: Date.now()
+                                    };
+                                    localStorage.setItem('adminSession', JSON.stringify(adminSessionData));
+                                    
+                                    // Navigate to upload page with impersonation
+                                    window.location.href = `/upload?impersonate=${artistUuid}`;
+                                  } else {
+                                    toast.error('User UUID not found');
+                                  }
+                                }}
+                                className="text-pink-300 hover:text-white hover:bg-pink-500/10"
+                              >
+                                <Upload className="w-3 h-3 mr-1" />
+                                View Upload
+                              </Button>
+                              
                               {/* Manual Edit Button */}
                               <Button
                                 size="sm"
