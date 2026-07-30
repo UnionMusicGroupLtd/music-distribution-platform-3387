@@ -30,7 +30,6 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isImpersonating, setIsImpersonating] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showPayoutForm, setShowPayoutForm] = useState(false);
   const [payoutLoading, setPayoutLoading] = useState(false);
@@ -59,11 +58,6 @@ const Dashboard = () => {
   const loadUserData = async () => {
     console.log("Dashboard: Starting user data load...");
     try {
-      // Check for admin impersonation
-      const urlParams = new URLSearchParams(window.location.search);
-      const impersonateUuid = urlParams.get('impersonate');
-      const adminSession = localStorage.getItem('adminSession');
-      
       let currentUserData = await auth.getUser();
       let effectiveUserUuid = currentUserData?.userUuid;
       
@@ -80,34 +74,6 @@ const Dashboard = () => {
       console.log("Dashboard: Current user data after retries:", currentUserData);
       console.log("Dashboard: Effective user UUID:", effectiveUserUuid);
       
-      // If admin is impersonating a user, get the impersonated user's data
-      if (impersonateUuid && adminSession) {
-        console.log("Dashboard: Admin impersonation detected", impersonateUuid);
-        setIsImpersonating(true);
-        const adminInfo = JSON.parse(adminSession);
-        console.log("Dashboard: Admin info", adminInfo);
-        
-        // Get the impersonated user's artist data
-        const impersonatedArtists = await db.query("artists", { user_uuid: `eq.${impersonateUuid}` });
-        if (impersonatedArtists.length > 0) {
-          const impersonatedUser = {
-            ...currentUserData,
-            userUuid: impersonateUuid,
-            email: impersonatedArtists[0].email || currentUserData.email,
-            artist_name: impersonatedArtists[0].artist_name
-          };
-          currentUserData = impersonatedUser;
-          effectiveUserUuid = impersonateUuid;
-          console.log("Dashboard: Using impersonated user data:", impersonatedUser);
-        }
-        
-        // Show impersonation banner
-        toast.success(`Admin logged in as user`, {
-          description: `Logged in as ${currentUserData?.email || 'user'}. Click 'Return to Admin' to go back.`,
-          duration: 5000
-        });
-      }
-      
       if (!currentUserData || !currentUserData.userUuid) {
         console.log("Dashboard: No user found after retries, redirecting to signin");
         toast.error("Please sign in to access your dashboard");
@@ -119,13 +85,13 @@ const Dashboard = () => {
       console.log("Dashboard: User authenticated, loading data for:", currentUserData.email);
       setCurrentUser(currentUserData);
 
-      // Check if user is admin (but don't show admin functions when impersonating)
+      // Check if user is admin
       // This check needs to happen BEFORE artist data loading, since admin users might not have artist records
       const userMetadata = currentUserData.appMetadata || {};
       const userEmail = currentUserData.email || '';
       
       // Multiple admin detection methods for robustness
-      const isAdminCheck = !isImpersonating && (
+      const isAdminCheck = (
         // Method 1: Check user metadata role
         userMetadata.role === 'admin' ||
         // Method 2: Check specific admin email
@@ -143,7 +109,6 @@ const Dashboard = () => {
       console.log("Dashboard: User email:", userEmail);
       console.log("Dashboard: User groups:", currentUserData.groups);
       console.log("Dashboard: Admin check details:", {
-        isImpersonating,
         userRole: userMetadata.role,
         email: userEmail,
         hasGroups: !!currentUserData.groups,
@@ -608,7 +573,7 @@ const Dashboard = () => {
               </span>
             </div>
             <div className="flex items-center gap-4">
-              <Link to={isImpersonating ? `/profile?impersonate=${currentUser?.userUuid}` : "/profile"}>
+              <Link to="/profile">
                 <Button variant="ghost" className="text-purple-300 hover:text-white">
                   <Settings className="w-4 h-4 mr-2" />
                   Profile
@@ -635,35 +600,7 @@ const Dashboard = () => {
         </div>
       </nav>
 
-      {/* Admin Impersonation Banner */}
-      {isImpersonating && (
-        <div className="fixed top-16 left-0 right-0 z-40 bg-gradient-to-r from-red-600 to-orange-600 border-b border-white/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-12">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-white" />
-                <span className="text-white font-medium">
-                  Admin Impersonation Mode: Viewing as {currentUser?.email}
-                </span>
-              </div>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  localStorage.removeItem('adminSession');
-                  window.location.href = '/admin';
-                }}
-                className="bg-white text-red-600 hover:bg-white/90"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Return to Admin
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <main className={isImpersonating ? "pt-36 pb-12 px-4 sm:px-6 lg:px-8" : "pt-24 pb-12 px-4 sm:px-6 lg:px-8"}>
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <div className="flex items-center justify-between mb-2">
@@ -742,7 +679,7 @@ const Dashboard = () => {
             <Card className="bg-purple-950/30 border-purple-500/20 p-6 mb-8">
               <h3 className="text-xl font-semibold text-white mb-2">Complete Your Profile</h3>
               <p className="text-purple-300 mb-4">Set up your artist profile to start distributing your music.</p>
-              <Link to={isImpersonating ? `/profile?impersonate=${currentUser?.userUuid}` : "/profile"}>
+              <Link to="/profile">
                 <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
                   Complete Profile
                 </Button>
@@ -889,7 +826,7 @@ const Dashboard = () => {
 
           <div className="grid md:grid-cols-2 gap-6">
             <Link 
-              to={isImpersonating ? `/upload?impersonate=${currentUser?.userUuid}` : "/upload"} 
+              to="/upload" 
               className="block"
               onClick={(e) => {
                 // Block navigation if user has no credits and no subscription
@@ -912,7 +849,7 @@ const Dashboard = () => {
               </Card>
             </Link>
 
-            <Link to={isImpersonating ? `/tracks?impersonate=${currentUser?.userUuid}` : "/tracks"} className="block">
+            <Link to="/tracks" className="block">
               <Card className="bg-gradient-to-br from-purple-950/50 to-slate-950/50 border-purple-500/20 p-6 hover:border-purple-500/40 transition-all cursor-pointer">
                 <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4">
                   <Music className="w-6 h-6 text-purple-400" />
@@ -1000,7 +937,7 @@ const Dashboard = () => {
             </div>
 
 
-            <Link to={isImpersonating ? `/profile?impersonate=${currentUser?.userUuid}` : "/profile"} className="block">
+            <Link to="/profile" className="block">
               <Card className="bg-gradient-to-br from-purple-950/50 to-slate-950/50 border-purple-500/20 p-6 hover:border-purple-500/40 transition-all cursor-pointer">
                 <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
                   <Settings className="w-6 h-6 text-blue-400" />
@@ -1010,7 +947,7 @@ const Dashboard = () => {
               </Card>
             </Link>
 
-            <Link to={isImpersonating ? `/royalties?impersonate=${currentUser?.userUuid}` : "/royalties"} className="block">
+            <Link to="/royalties" className="block">
               <Card className="bg-gradient-to-br from-purple-950/50 to-slate-950/50 border-purple-500/20 p-6 hover:border-purple-500/40 transition-all cursor-pointer">
                 <div className="w-12 h-12 rounded-lg bg-pink-500/20 flex items-center justify-center mb-4">
                   <DollarSign className="w-6 h-6 text-pink-400" />
