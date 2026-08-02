@@ -1271,18 +1271,6 @@ const Dashboard = () => {
               </div>
             )}
           </Card>
-
-            {isAdmin && (
-              <Link to="/admin" className="block">
-                <Card className="bg-gradient-to-br from-red-950/50 to-slate-950/50 border-red-500/20 p-6 hover:border-red-500/40 transition-all cursor-pointer">
-                  <div className="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center mb-4">
-                    <Shield className="w-6 h-6 text-red-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-2">Admin Panel</h3>
-                  <p className="text-purple-300">Access admin controls and management</p>
-                </Card>
-              </Link>
-            )}
           </div>
         </div>
       </main>
