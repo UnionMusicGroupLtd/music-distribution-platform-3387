@@ -34,6 +34,13 @@ const Royalties = () => {
       let currentUserData = await auth.getUser();
       let effectiveUserUuid = currentUserData?.userUuid;
       
+      // Add null check early to prevent crashes
+      if (!currentUserData) {
+        console.log('Royalties: No user data from auth.getUser(), redirecting to signin');
+        navigate("/signin");
+        return;
+      }
+      
       // If admin is impersonating a user, get the impersonated user's data
       if (impersonateUuid && adminSession) {
         console.log("Royalties: Admin impersonation detected", impersonateUuid);
@@ -47,7 +54,7 @@ const Royalties = () => {
           const impersonatedUser = {
             ...currentUserData,
             userUuid: impersonateUuid,
-            email: impersonatedArtists[0].email || currentUserData.email,
+            email: impersonatedArtists[0].email || currentUserData?.email || 'user@example.com',
             artist_name: impersonatedArtists[0].artist_name
           };
           currentUserData = impersonatedUser;
@@ -64,7 +71,12 @@ const Royalties = () => {
         });
       }
       
-      console.log('Royalties: User authenticated:', currentUserData.email);
+      // Set current user for non-impersonation as well
+      if (!isImpersonating) {
+        setCurrentUser(currentUserData);
+      }
+      
+      console.log('Royalties: User authenticated:', currentUserData?.email || 'unknown');
       console.log('Royalties: Effective user UUID:', effectiveUserUuid);
 
       if (!currentUserData) {
@@ -78,6 +90,15 @@ const Royalties = () => {
       const finalUserUuid = artists.length > 0 ? artists[0].user_uuid : effectiveUserUuid;
       
       console.log('Royalties: Final user UUID:', finalUserUuid);
+      
+      // If no artist record found, handle gracefully
+      if (artists.length === 0) {
+        console.log('Royalties: No artist record found for user, showing empty state');
+        setRoyalties([]);
+        setTracks([]);
+        setLoading(false);
+        return;
+      }
 
       // Load tracks using the correct UUID
       console.log('Royalties: Loading tracks...');
