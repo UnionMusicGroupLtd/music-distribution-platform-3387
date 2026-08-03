@@ -364,7 +364,21 @@ const Royalties = () => {
               </div>
               
               {royalties.length > 0 ? (
-                <RoyaltyAnalytics royalties={royalties} tracks={tracks} />
+                <div>
+                  {(() => {
+                    try {
+                      return <RoyaltyAnalytics royalties={royalties} tracks={tracks} />;
+                    } catch (analyticsError) {
+                      console.error('RoyaltyAnalytics rendering error:', analyticsError);
+                      return (
+                        <div className="text-center py-8">
+                          <p className="text-purple-300">Analytics data is available but could not be displayed due to a technical issue.</p>
+                          <p className="text-purple-400 text-sm mt-2">Error: {analyticsError instanceof Error ? analyticsError.message : 'Unknown error'}</p>
+                        </div>
+                      );
+                    }
+                  })()}
+                </div>
               ) : (
                 <div className="text-center py-8">
                   <p className="text-purple-300">No analytics data available yet</p>
