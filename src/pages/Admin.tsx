@@ -2110,12 +2110,12 @@ Created at: ${new Date().toLocaleString()}
       setQuickRoyaltyLoading(true);
       
       // Validation
-      if (!quickRoyalty.artist_email || !quickRoyalty.track_title || !quickRoyalty.platform) {
-        toast.error('Artist Email, Track Title, and Platform are required');
+      if (!quickRoyalty.artist_email || !quickRoyalty.track_title) {
+        toast.error('Artist Email and Track Title are required');
         return;
       }
-      if (quickRoyalty.streams < 0 || quickRoyalty.revenue < 0) {
-        toast.error('Streams and Revenue must be positive numbers');
+      if (quickRoyalty.revenue < 0) {
+        toast.error('Revenue must be a positive number');
         return;
       }
       if (quickRoyalty.revenue === 8 || String(quickRoyalty.revenue) === '8') {
@@ -2147,8 +2147,8 @@ Created at: ${new Date().toLocaleString()}
       await db.insert('royalties', {
         artist_uuid: artistUuid,
         track_title: quickRoyalty.track_title,
-        platform: quickRoyalty.platform,
-        streams: quickRoyalty.streams,
+        platform: 'Manual Entry',
+        streams: 0,
         revenue: quickRoyalty.revenue,
         currency: quickRoyalty.currency,
         period: period,
@@ -2162,7 +2162,7 @@ Created at: ${new Date().toLocaleString()}
       });
       
       toast.success('Quick royalty entry added successfully!', {
-        description: `Added ${quickRoyalty.platform} royalty for ${quickRoyalty.track_title} - User will see this in their dashboard`,
+        description: `Added $${quickRoyalty.revenue.toFixed(2)} for ${quickRoyalty.track_title} - User will see this in their dashboard`,
         duration: 4000
       });
       
@@ -6655,42 +6655,6 @@ Created at: ${new Date().toLocaleString()}
                       value={quickRoyalty.track_title}
                       onChange={(e) => setQuickRoyalty({...quickRoyalty, track_title: e.target.value})}
                       placeholder="Song Name"
-                      className="bg-slate-800 border-purple-500/30 text-white"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm text-purple-300">Platform *</label>
-                    <select
-                      value={quickRoyalty.platform}
-                      onChange={(e) => setQuickRoyalty({...quickRoyalty, platform: e.target.value})}
-                      className="w-full px-3 py-2 bg-slate-800 border border-purple-500/30 rounded-md text-white"
-                    >
-                      <option value="">Select Platform</option>
-                      <option value="Spotify">Spotify</option>
-                      <option value="Apple Music">Apple Music</option>
-                      <option value="YouTube Music">YouTube Music</option>
-                      <option value="Amazon Music">Amazon Music</option>
-                      <option value="Pandora">Pandora</option>
-                      <option value="Deezer">Deezer</option>
-                      <option value="Tidal">Tidal</option>
-                      <option value="SoundCloud">SoundCloud</option>
-                      <option value="Facebook">Facebook</option>
-                      <option value="Instagram">Instagram</option>
-                      <option value="TikTok">TikTok</option>
-                      <option value="JioSaavn">JioSaavn</option>
-                      <option value="Joox">Joox</option>
-                      <option value="Qobuz">Qobuz</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm text-purple-300">Streams *</label>
-                    <Input
-                      type="number"
-                      value={quickRoyalty.streams}
-                      onChange={(e) => setQuickRoyalty({...quickRoyalty, streams: parseInt(e.target.value) || 0})}
-                      placeholder="0"
                       className="bg-slate-800 border-purple-500/30 text-white"
                     />
                   </div>
