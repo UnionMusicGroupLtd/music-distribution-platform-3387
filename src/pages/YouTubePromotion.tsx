@@ -56,8 +56,8 @@ const YouTubePromotion = () => {
         status: 'pending',
       });
       toast.success('Promotion request submitted successfully!', {
-        description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}).`,
-        duration: 6000,
+        description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
+        duration: 7000,
       });
       setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 1000 });
     } catch (error) {
@@ -229,6 +229,16 @@ const YouTubePromotion = () => {
               {loading ? 'Submitting...' : `Buy Now — $${selectedPackage?.price || 0}`}
             </Button>
           </form>
+        </Card>
+
+        {/* No Refund Policy Note */}
+        <Card className="bg-yellow-500/5 border-yellow-500/30 p-5 mt-8">
+          <h3 className="text-white font-semibold mb-2 flex items-center gap-2">
+            <span>⚠️</span> No Refund Policy
+          </h3>
+          <p className="text-yellow-200/90 text-sm">
+            <strong className="text-yellow-100">Please note:</strong> Once a promotion campaign has <strong className="text-yellow-100">started</strong>, and once it has been <strong className="text-yellow-100">completed</strong>, the amount paid is <strong className="text-yellow-100">non-refundable</strong>. By placing an order, you agree to this policy. Please make sure your video link and package selection are correct before purchasing.
+          </p>
         </Card>
 
         {/* Trust Note */}
