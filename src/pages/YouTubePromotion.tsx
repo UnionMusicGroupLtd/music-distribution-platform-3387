@@ -54,10 +54,12 @@ const YouTubePromotion = () => {
         price: selectedPackage?.price || 0,
       });
       toast.success('Promotion request submitted successfully!', {
-        description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
+        description: `Opening PayPal to pay for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
         duration: 7000,
       });
       setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 1000 });
+      // Send the customer to PayPal to complete payment
+      window.open('https://www.paypal.com/ncp/payment/WDBBZHQYYXW5G', '_blank');
     } catch (error) {
       console.error('Error submitting promotion request:', error);
       toast.error('Failed to submit request. Please try again or contact support.');
@@ -216,7 +218,7 @@ const YouTubePromotion = () => {
 
         {/* Trust Note */}
         <p className="text-center text-purple-400 text-sm mt-8">
-          Our promotion is genuine and handled by our professional team. After submitting your order, we'll contact you with payment details and start your campaign within 24–48 hours.
+          Our promotion is genuine and handled by our professional team. After submitting your order, you'll be taken to PayPal to complete your payment, and we'll start your campaign within 24–48 hours.
         </p>
       </div>
     </div>
