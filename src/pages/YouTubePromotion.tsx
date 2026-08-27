@@ -43,17 +43,15 @@ const YouTubePromotion = () => {
 
     setLoading(true);
     try {
-      // Store the promotion request in the database
-      const db = (await import('@/lib/shared/kliv-database.js')).default;
-      await db.insert('youtube_promotion_orders', {
-        first_name: form.firstName,
-        last_name: form.lastName,
+      // Submit via server function: saves order + emails admin notification
+      const functions = (await import('@/lib/shared/kliv-functions.js')).default;
+      await functions.invoke('youtube-promotion-order', {
+        firstName: form.firstName,
+        lastName: form.lastName,
         email: form.email,
-        youtube_link: form.youtubeLink,
+        youtubeLink: form.youtubeLink,
         views: form.views,
         price: selectedPackage?.price || 0,
-        currency: 'USD',
-        status: 'pending',
       });
       toast.success('Promotion request submitted successfully!', {
         description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
