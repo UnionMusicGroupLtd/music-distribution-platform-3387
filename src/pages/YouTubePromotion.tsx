@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const VIEW_PACKAGES = [
-  { views: 1000, price: 6 },
+  { views: 5000, price: 24 },
   { views: 5000, price: 24 },
   { views: 10000, price: 46 },
   { views: 50000, price: 108 },
@@ -20,7 +20,7 @@ const YouTubePromotion = () => {
     lastName: '',
     email: '',
     youtubeLink: '',
-    views: 1000,
+    views: 5000,
   });
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ const YouTubePromotion = () => {
         description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
         duration: 7000,
       });
-      setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 1000 });
+      setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 5000 });
     } catch (error) {
       console.error('Error submitting promotion request:', error);
       toast.error('Failed to submit request. Please try again or contact support.');
