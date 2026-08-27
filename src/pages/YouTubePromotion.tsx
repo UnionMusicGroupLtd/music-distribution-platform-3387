@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const VIEW_PACKAGES = [
-  { views: 5000, price: 24 },
+  { views: 1000, price: 6 },
   { views: 5000, price: 24 },
   { views: 10000, price: 46 },
   { views: 50000, price: 108 },
@@ -20,7 +20,7 @@ const YouTubePromotion = () => {
     lastName: '',
     email: '',
     youtubeLink: '',
-    views: 5000,
+    views: 1000,
   });
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ const YouTubePromotion = () => {
         description: `We will contact you at ${form.email} with payment details for your ${form.views.toLocaleString()} views package ($${selectedPackage?.price}). Note: once the promotion starts and is completed, the amount is non-refundable.`,
         duration: 7000,
       });
-      setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 5000 });
+      setForm({ firstName: '', lastName: '', email: '', youtubeLink: '', views: 1000 });
     } catch (error) {
       console.error('Error submitting promotion request:', error);
       toast.error('Failed to submit request. Please try again or contact support.');
@@ -109,25 +109,6 @@ const YouTubePromotion = () => {
                 <p className="text-xs text-purple-300 mt-1">Experienced music marketers</p>
               </div>
             </div>
-          </div>
-        </Card>
-
-        {/* Pricing Table */}
-        <Card className="bg-slate-900/50 border-purple-500/20 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">View Packages & Pricing</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <tbody>
-                {VIEW_PACKAGES.map((pkg) => (
-                  <tr key={pkg.views} className="border-b border-purple-500/10">
-                    <td className="py-3 px-4">
-                      <Badge className="bg-purple-500/20 text-purple-300">{pkg.views.toLocaleString()} views</Badge>
-                    </td>
-                    <td className="text-right py-3 px-4 text-white font-medium">${pkg.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </Card>
 
