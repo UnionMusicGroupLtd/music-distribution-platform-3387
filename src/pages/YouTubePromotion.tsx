@@ -117,12 +117,6 @@ const YouTubePromotion = () => {
           <h2 className="text-xl font-semibold text-white mb-4">View Packages & Pricing</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-purple-500/20">
-                  <th className="text-left py-3 px-4 text-purple-200 text-sm font-semibold">VIEWS</th>
-                  <th className="text-right py-3 px-4 text-purple-200 text-sm font-semibold">PRICE</th>
-                </tr>
-              </thead>
               <tbody>
                 {VIEW_PACKAGES.map((pkg) => (
                   <tr key={pkg.views} className="border-b border-purple-500/10">
