@@ -76,7 +76,7 @@ const YouTubePromotion = () => {
               <span className="text-white font-bold text-lg">UMG</span>
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">YouTube View Promotion</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">YOUTUBE PROMOTION</h1>
           <p className="text-purple-300 text-lg">
             Boost your music videos with genuine views from real audiences
           </p>
