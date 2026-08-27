@@ -27,6 +27,7 @@ import LinkTree from "./pages/LinkTree";
 import NotFound from "./pages/NotFound";
 import MediaPartner from "./pages/MediaPartner";
 import CoverSongLicensing from "./pages/CoverSongLicensing";
+import YouTubePromotion from "./pages/YouTubePromotion";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/link-tree/:id" element={<LinkTree />} />
           <Route path="/media-partner" element={<MediaPartner />} />
           <Route path="/cover-song-licensing" element={<CoverSongLicensing />} />
+          <Route path="/youtube-promotion" element={<YouTubePromotion />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>

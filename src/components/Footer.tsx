@@ -70,6 +70,17 @@ const Footer = ({ hideQuickLinks = false }: { hideQuickLinks?: boolean }) => {
           </div>
 
           <div>
+            <h4 className="text-white font-semibold mb-4">Promotion</h4>
+            <ul className="space-y-2">
+              <li>
+                <a href="/youtube-promotion" className="text-purple-300 hover:text-white text-sm">
+                  YouTube Promotion
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
             <h4 className="text-white font-semibold mb-4">Become Partner</h4>
             <ul className="space-y-2">
               <li>
