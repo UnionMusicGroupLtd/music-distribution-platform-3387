@@ -268,7 +268,7 @@ export const RoyaltyAnalytics = ({ royalties, tracks }: RoyaltyAnalyticsProps) =
         <h3 className="text-lg font-semibold text-white mb-4">Top Performing Tracks</h3>
         <div className="space-y-3">
           {trackData.map((track: any, index: number) => (
-            <Card key={track.title} className="bg-slate-800/50 border-purple-500/10 p-4">
+            <Card key={`${track.title}-${index}`} className="bg-slate-800/50 border-purple-500/10 p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -302,13 +302,14 @@ export const RoyaltyAnalytics = ({ royalties, tracks }: RoyaltyAnalyticsProps) =
             <LineChart data={monthlyTrend}>
               <CartesianGrid strokeDasharray="3 3" stroke="#3b0764" />
               <XAxis dataKey="period" stroke="#a855f7" fontSize={12} />
-              <YAxis stroke="#a855f7" fontSize={12} />
+              <YAxis yAxisId="left" stroke="#a855f7" fontSize={12} />
+              <YAxis yAxisId="right" orientation="right" stroke="#ec4899" fontSize={12} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#1e1b4b', border: '1px solid #7c3aed', borderRadius: '8px' }}
                 itemStyle={{ color: '#fff' }}
               />
               <Legend />
-              <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={2} name="Revenue ($)" />
+              <Line type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={2} name="Revenue ($)" yAxisId="left" />
               <Line type="monotone" dataKey="streams" stroke="#ec4899" strokeWidth={2} name="Streams" yAxisId="right" />
             </LineChart>
           </ResponsiveContainer>
