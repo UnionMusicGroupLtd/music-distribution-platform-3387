@@ -7,7 +7,7 @@ import { Music, ArrowLeft, TrendingUp, DollarSign, Play, Globe2, BarChart3, Chec
 import { toast } from "sonner";
 import auth from "@/lib/shared/kliv-auth.js";
 import db from "@/lib/shared/kliv-database.js";
-import RoyaltyAnalytics from "@/components/RoyaltyAnalytics";
+import { SafeRoyaltyAnalytics as RoyaltyAnalytics } from "@/components/RoyaltyAnalytics";
 
 const Royalties = () => {
   const navigate = useNavigate();

@@ -57,6 +57,7 @@ const Dashboard = () => {
   }, []);
 
   const loadUserData = async () => {
+    let currentUserData: any = null;
     console.log("Dashboard: Starting user data load...");
     try {
       // Check for admin impersonation
@@ -64,7 +65,7 @@ const Dashboard = () => {
       const impersonateUuid = urlParams.get('impersonate');
       const adminSession = localStorage.getItem('adminSession');
       
-      let currentUserData = await auth.getUser();
+      currentUserData = await auth.getUser();
       let effectiveUserUuid = currentUserData?.userUuid;
       
       // Retry logic for auth.getUser() - it might take a moment to persist
@@ -191,7 +192,7 @@ const Dashboard = () => {
           // Pre-fill form with saved settings
           setPayoutForm({
             full_name: payoutSettingsData[0].default_full_name || '',
-            email: payoutSettingsData[0].payout_email || currentUserData.email,
+            email: payoutSettingsData[0].payout_email || currentUserData?.email || "",
             country: payoutSettingsData[0].default_country || '',
             bank_name: payoutSettingsData[0].default_bank_name || '',
             account_number: payoutSettingsData[0].default_account_number || '',
@@ -250,7 +251,7 @@ const Dashboard = () => {
           }
         });
         
-        const hasSubscription = artist.package_type === 'sub';
+        const hasSubscription = (artist as any)?.package_type === 'sub' || false;
         const hasCredits = availableCredits > 0;
 
       // Calculate user's actual earnings after splits

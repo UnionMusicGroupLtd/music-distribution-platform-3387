@@ -122,7 +122,7 @@ export const RoyaltyAnalytics = ({ royalties, tracks }: RoyaltyAnalyticsProps) =
         revenue: data.revenue,
         streams: data.streams
       }))
-      .sort((a, b) => a.period.localeCompare(b.period));
+      .sort((a, b) => String(a.period).localeCompare(String(b.period)));
   };
 
   const platformData = getPlatformBreakdown();
@@ -320,3 +320,19 @@ export const RoyaltyAnalytics = ({ royalties, tracks }: RoyaltyAnalyticsProps) =
 };
 
 export default RoyaltyAnalytics;
+
+import React from "react";
+class AnalyticsBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  componentDidCatch(e: unknown) { console.error("RoyaltyAnalytics crashed:", e); }
+  render() {
+    if (this.state.failed) {
+      return <div className="text-center py-8"><p className="text-purple-300">Analytics couldn't be displayed right now. Your royalty list above is unaffected.</p></div>;
+    }
+    return this.props.children;
+  }
+}
+export const SafeRoyaltyAnalytics = (props: RoyaltyAnalyticsProps) => (
+  <AnalyticsBoundary><RoyaltyAnalytics {...props} /></AnalyticsBoundary>
+);
